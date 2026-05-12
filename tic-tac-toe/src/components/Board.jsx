@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 function Square({ value, handleSquareClick }) {
   return (
     <button
@@ -11,15 +9,24 @@ function Square({ value, handleSquareClick }) {
   );
 }
 
-export default function Board() {
-  const [square, setSquare] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsxIsNext] = useState(true);
+// board component ;
 
+export default function Board({ xIsNext, square, onPlay }) {
   const winner = checkWinner(square);
   let status;
 
+  let moveCnt = 0;
+  for (let i = 0; i < square.length; i++) {
+    if (square[i] === "O" || square[i] === "X") {
+      moveCnt++;
+    }
+  }
+
+
   if (winner) {
     status = `winner ${winner}`;
+  } else if (moveCnt === 9 && !winner) {
+    status = "No one win";
   } else {
     status = "Next Player : " + (xIsNext ? "X" : "O");
   }
@@ -34,8 +41,7 @@ export default function Board() {
       nextSquare[i] = "O";
     }
 
-    setXIsxIsNext(!xIsNext);
-    setSquare(nextSquare);
+    onPlay(nextSquare);
   }
 
   return (
@@ -89,6 +95,7 @@ export default function Board() {
   );
 }
 
+// winner checker ;
 function checkWinner(square) {
   const posResult = [
     [0, 1, 2],
